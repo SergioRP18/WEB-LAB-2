@@ -22,6 +22,8 @@ function App() {
       state: 'Pendiente',
     };
     setTasks([...tasks, newTask]);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+
   };
 
   const updateTaskState = (id, newState) => {
