@@ -1,35 +1,67 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import Form from './components/Form/Form';
+import Task from './components/Task/Task';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    setTasks(savedTasks);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
+
+  const addTask = (taskName) => {
+    const newTask = {
+      id: Date.now(),
+      name: taskName,
+      state: 'Pendiente',
+    };
+    setTasks([...tasks, newTask]);
+  };
+
+  const updateTaskState = (id, newState) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, state: newState } : task
+      )
+    );
+  };
+
+  const deleteTask = (id) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <h1>TO-DO Manager</h1>
+      <Form addTask={addTask} />
+      <div className="columns-container">
+        <Task
+          title="Pendiente"
+          tasks={tasks.filter((task) => task.state === 'Pendiente')}
+          updateTaskState={updateTaskState}
+          deleteTask={deleteTask}
+        />
+        <Task
+          title="En Progreso"
+          tasks={tasks.filter((task) => task.state === 'En Progreso')}
+          updateTaskState={updateTaskState}
+          deleteTask={deleteTask}
+        />
+        <Task
+          title="Completadas"
+          tasks={tasks.filter((task) => task.state === 'Completadas')}
+          updateTaskState={updateTaskState}
+          deleteTask={deleteTask}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
