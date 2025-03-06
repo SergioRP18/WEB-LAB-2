@@ -16,7 +16,7 @@ const Form = ({ addTask }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className='formulario'>
       <input
         type="text"
         value={inputValue}
