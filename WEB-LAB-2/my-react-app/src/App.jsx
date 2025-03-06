@@ -7,13 +7,26 @@ function App() {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    setTasks(savedTasks);
+    const storedTasks = localStorage.getItem("tasks");
+    if (storedTasks) {
+      setTasks(JSON.parse(storedTasks));
+    }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    if (tasks.length > 0) {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
   }, [tasks]);
+
+  // useEffect(() => {
+  //   const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  //   setTasks(savedTasks);
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem('tasks', JSON.stringify(tasks));
+  // }, [tasks]);
 
   const addTask = (taskName) => {
     const newTask = {
@@ -22,7 +35,6 @@ function App() {
       state: 'Pendiente',
     };
     setTasks([...tasks, newTask]);
-    localStorage.setItem('tasks', JSON.stringify(tasks));
 
   };
 
